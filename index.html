@@ -159,8 +159,18 @@
 }</code></pre>
       </article>
       <article class="card code-card">
-        <h3>Claude Desktop・ChatGPT</h3>
-        <p>Claude Desktopは「Settings → Connectors」からカスタムコネクターを追加。ChatGPTはカスタムMCPアプリの作成画面でURLを登録する。ChatGPT側はプランやワークスペースの管理者設定により利用できない場合があるよ。</p>
+        <h3>Claude Desktop</h3>
+        <ol>
+          <li>アプリの <strong>Settings → Connectors</strong> を開く。</li>
+          <li><strong>Add custom connector</strong> を選ぶ。</li>
+          <li>名前に「浜松市オープンデータ」、URLに <code>https://hamamatsu-opendata-mcp.code4hamamatsu.org/mcp</code> を入力して追加する。</li>
+          <li>会話画面の <strong>Search and tools</strong> からコネクターを有効にする。</li>
+        </ol>
+        <p class="small">この接続はトークン不要。カスタムコネクターはPro・Max・Team・Enterpriseで利用できるよ。Team・Enterpriseでは、組織の管理者がコネクターを追加・有効化する必要がある場合がある。詳しくは<a href="https://support.anthropic.com/en/articles/11175166-getting-started-with-custom-connectors-using-remote-mcp">Anthropicの設定ガイド</a>を確認してね。</p>
+      </article>
+      <article class="card code-card">
+        <h3>ChatGPT</h3>
+        <p>カスタムMCPアプリの作成画面で接続URLを登録する。ChatGPT側はプランやワークスペースの管理者設定により利用できない場合があるよ。</p>
       </article>
     </section>
 
