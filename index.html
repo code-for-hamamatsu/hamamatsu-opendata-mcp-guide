@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#f5f7fa">
-  <meta name="description" content="浜松市オープンデータ MCPでできること、利用できるデータ、Codex・Claude Codeの設定方法を紹介します。">
+  <meta name="description" content="浜松市オープンデータ MCPでできること、利用できるデータ、各種AIクライアントの接続方法を紹介します。">
   <title>浜松市オープンデータ MCP｜利用ガイド</title>
   <style>
     :root {
@@ -88,7 +88,7 @@
     <section class="hero" aria-labelledby="page-title">
       <div class="eyebrow">利用ガイド</div>
       <h1 id="page-title">浜松市のデータを、<br>AIアシスタントと探そう</h1>
-      <p class="lead">浜松市が公開するオープンデータを、CodexやClaude Codeから検索・取得できるサービスだよ。使い始める前に、利用できるデータとトークンの準備方法を確認しよう。</p>
+      <p class="lead">浜松市が公開するオープンデータを、対応するAIアシスタントから検索・取得できるMCPサーバーだよ。接続URLを登録すれば、すぐに使い始められるよ。</p>
       <p class="updated">カタログ登録354件｜2026年11月3日時点</p>
     </section>
 
@@ -98,7 +98,7 @@
       <div class="card">
         <p>チャットで「浜松市の避難所を探して」「子育て支援ひろばの開館日を見せて」と頼むと、AIアシスタントがデータセットを検索し、公開元にあるJSONデータを取得する。回答に使ったデータの出典やURLも確認できるよ。</p>
         <p class="url"><strong>接続URL</strong><br><code>https://hamamatsu-opendata-mcp.code4hamamatsu.org/mcp</code></p>
-        <p class="small">MCPクライアントからAPI GatewayとAWS Lambdaを通じて浜松市の公開データへアクセスする構成。接続には個人ごとのBearerトークンが必要。</p>
+        <p class="small">API Gatewayの流量制限とLambdaの同時実行数制限を設定しているよ。</p>
       </div>
     </section>
 
@@ -128,54 +128,48 @@
     </section>
 
     <section class="section" aria-labelledby="token">
-      <h2 id="token">利用にはトークン発行が必要</h2>
-      <p class="intro">URLを設定するだけでは接続できないよ。アクセス許可を受けて、あなた専用のトークンを発行してもらおう。</p>
-      <ol class="steps">
-        <li><strong>管理者へ利用申請</strong>利用する人の識別名と、CodexまたはClaude Codeのどちらを使うかを伝える。</li>
-        <li><strong>個人用トークンを受け取る</strong>発行されたトークンは、パスワードと同じように安全に保管する。</li>
-        <li><strong>クライアントに設定</strong>下の手順でMCPサーバーとトークンを登録する。</li>
-        <li><strong>接続を確認</strong>ツール一覧に3つの機能が表示されたら準備完了。</li>
-      </ol>
-      <div class="note"><p><strong>申請先：</strong>このページを案内したサービス管理者に、利用者IDと利用するクライアントを伝えてね。トークンはこのページから自分で発行できないよ。</p></div>
+      <h2 id="token">利用方法</h2>
+      <p class="intro">MCPに対応したクライアントへ接続URLを登録するだけ。アカウント申請やトークンの発行は必要ないよ。</p>
+      <div class="card">
+        <h3>接続URL</h3>
+        <p class="url"><code>https://hamamatsu-opendata-mcp.code4hamamatsu.org/mcp</code></p>
+        <p>接続方式は「リモートMCP」または「Streamable HTTP」を選んでね。認証方式の選択やAuthorizationヘッダーの入力は不要。</p>
+        <p class="small">Claude Desktopでは「Settings → Connectors」からカスタムコネクターを追加。ChatGPTでは、利用可能なプラン・ワークスペースでWeb版の設定からカスタムMCPアプリを作成してURLを登録するよ。利用できる機能や画面はアカウント設定によって異なる場合がある。</p>
+      </div>
+      <div class="note"><p><strong>接続後：</strong>ツール一覧に <code>search_datasets</code>、<code>get_dataset</code>、<code>fetch_dataset</code> が表示されたら準備完了。</p></div>
     </section>
 
     <section class="section" aria-labelledby="setup">
-      <h2 id="setup">設定方法</h2>
-      <p class="intro">トークンを受け取ったら、利用するクライアントの手順に沿って設定しよう。URLとトークンの両方が必要。</p>
-
+      <h2 id="setup">クライアントへの登録例</h2>
+      <p class="intro">各クライアントでリモートMCPサーバーを追加し、上のURLを登録してね。</p>
       <article class="card code-card">
-        <h3>Codex</h3>
-        <p>Codexの <code>~/.codex/config.toml</code> に、次の設定を追加する。接続確認できた設定方法は、Authorizationヘッダーにトークンを指定する形だよ。</p>
-        <pre><code>[mcp_servers.hamamatsu-opendata]
-url = "https://hamamatsu-opendata-mcp.code4hamamatsu.org/mcp"
-http_headers = { "Authorization" = "Bearer ここに発行されたトークン" }</code></pre>
-        <p class="small" style="margin-top:12px">設定後にCodexを再起動し、MCPサーバーの状態が <code>connected</code> になることを確認。設定ファイルに生トークンを保存するため、このファイルは共有・コミットせず、閲覧できる人を自分に限定してね。</p>
+        <h3>Codex CLI</h3>
+        <pre><code>codex mcp add hamamatsu-opendata --url https://hamamatsu-opendata-mcp.code4hamamatsu.org/mcp</code></pre>
       </article>
-
       <article class="card code-card">
         <h3>Claude Code</h3>
-        <p>プロジェクトのルートにある <code>.mcp.json</code> に設定する。トークンを環境変数 <code>HAMAMATSU_MCP_TOKEN</code> に入れてからClaude Codeを起動してね。</p>
+        <p>プロジェクトの <code>.mcp.json</code> に以下を設定する。</p>
         <pre><code>{
   "mcpServers": {
     "hamamatsu-opendata": {
       "type": "http",
-      "url": "https://hamamatsu-opendata-mcp.code4hamamatsu.org/mcp",
-      "headers": {
-        "Authorization": "Bearer ${HAMAMATSU_MCP_TOKEN}"
-      }
+      "url": "https://hamamatsu-opendata-mcp.code4hamamatsu.org/mcp"
     }
   }
 }</code></pre>
-        <p class="small" style="margin-top:12px">macOS・Linuxの例：ターミナルで <code>export HAMAMATSU_MCP_TOKEN='発行されたトークン'</code> を実行してからClaude Codeを起動。`.mcp.json` は環境変数の参照を保持し、生トークンを書き込まないようにする。</p>
+      </article>
+      <article class="card code-card">
+        <h3>Claude Desktop・ChatGPT</h3>
+        <p>Claude Desktopは「Settings → Connectors」からカスタムコネクターを追加。ChatGPTはカスタムMCPアプリの作成画面でURLを登録する。ChatGPT側はプランやワークスペースの管理者設定により利用できない場合があるよ。</p>
       </article>
     </section>
 
     <section class="section" aria-labelledby="not-supported">
-      <h2 id="not-supported">対応しているクライアント</h2>
-      <p class="intro">このトークン認証方式で接続確認できているクライアントを使ってね。</p>
+      <h2 id="not-supported">対応クライアント</h2>
+      <p class="intro">リモートMCPまたはStreamable HTTPに対応したクライアントから利用できるよ。</p>
       <div class="unsupported">
-        <article class="card"><h3>利用できる</h3><p>Codex、Claude Code</p><p class="small">リモートMCPサーバーとして接続する。</p></article>
-        <article class="card"><h3>現在は利用できない</h3><p>Claude Desktop、ChatGPT</p><p class="small">現在の固定Bearerトークン方式では接続できない。対応するには別の認証方式が必要。</p></article>
+        <article class="card"><h3>接続先</h3><p>浜松市オープンデータ MCP</p><p class="small">認証なしの公開リモートMCPサーバー。接続にトークンは不要。</p></article>
+        <article class="card"><h3>利用条件</h3><p>クライアント側の機能提供状況による</p><p class="small">ChatGPTなどはプランやワークスペース設定でカスタムMCP機能が制限される場合があるよ。</p></article>
       </div>
     </section>
 
@@ -183,10 +177,10 @@ http_headers = { "Authorization" = "Bearer ここに発行されたトークン"
       <h2 id="help">つながらないとき</h2>
       <div class="card">
         <ul>
-          <li>有効なトークンが設定されているか確認する。前後の空白や改行を含めない。</li>
-          <li>トークンを再発行した場合は、新しいトークンをクライアントへ設定する。</li>
-          <li>Codexは設定変更後に再起動し、MCPサーバーの状態を確認する。</li>
-          <li>解決しない場合は、トークンそのものを送らずに管理者へ相談する。</li>
+          <li>接続URLの末尾が <code>/mcp</code> になっているか確認する。</li>
+          <li>接続方式にリモートMCPまたはStreamable HTTPを選んでいるか確認する。</li>
+          <li>API Gatewayの共有レート制限に達すると、一時的にリクエストが制限される場合があるよ。少し待ってから試してね。</li>
+          <li>ChatGPTはプランやワークスペース管理者の設定により、カスタムMCP機能を使えない場合がある。</li>
         </ul>
       </div>
     </section>
